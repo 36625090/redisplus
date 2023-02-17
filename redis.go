@@ -64,6 +64,8 @@ type RedisCli interface {
 	LInsert(key string, op InsertOP, pivot, value []byte) (int64, error)
 	SLen(key string) (int64, error)
 	SAdd(key string, values ...[]byte) (int64, error)
+	SMembers(key string) ([]string, error)
+	SISMember(key string, value []byte) (bool, error)
 	SRem(key string, values ...[]byte) (int64, error)
 	SPop(key string) ([]byte, error)
 	SPopN(key string, count int64) ([][]byte, error)

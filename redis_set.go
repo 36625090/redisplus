@@ -12,6 +12,14 @@ func (r *redisView) SAdd(key string, values ...[]byte) (int64, error) {
 	return r.cmd.SAdd(r.expandKey(key), in...).Result()
 }
 
+func (r *redisView) SMembers(key string) ([]string, error) {
+	return r.cmd.SMembers(r.expandKey(key)).Result()
+}
+
+func (r *redisView) SISMember(key string, value []byte) (bool, error) {
+	return r.cmd.SIsMember(r.expandKey(key), value).Result()
+}
+
 func (r *redisView) SRem(key string, values ...[]byte) (int64, error) {
 	var in []interface{}
 	for _, value := range values {
