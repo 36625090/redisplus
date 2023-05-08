@@ -1,5 +1,10 @@
 package redisplus
 
+import (
+	"fmt"
+	"gopkg.in/redis.v5"
+)
+
 func (r *redisView) HSetNX(key, field string, value []byte) error {
 	return wrapResult(func() (interface{}, error) {
 		return r.cmd.HSetNX(r.expandKey(key), field, value).Result()
@@ -26,14 +31,20 @@ func (r *redisView) HMSet(key string, Values map[string][]byte) error {
 }
 
 func (r *redisView) HGet(key, field string) ([]byte, error) {
-	result, err := r.cmd.HGet(r.expandKey(key), field).Result()
+	ek := r.expandKey(key)
+	result, err := r.cmd.HGet(ek, field).Result()
+	if nil != err && err != redis.Nil {
+		return nil, fmt.Errorf("get value with key: %s, err: %s", ek, err)
+	}
+
 	return []byte(result), err
 }
 
 func (r *redisView) HMGet(key string, fields ...string) ([][]byte, error) {
-	result, err := r.cmd.HMGet(r.expandKey(key), fields...).Result()
-	if nil != err {
-		return nil, err
+	ek := r.expandKey(key)
+	result, err := r.cmd.HMGet(ek, fields...).Result()
+	if nil != err && err != redis.Nil {
+		return nil, fmt.Errorf("get value with key: %s, err: %s", ek, err)
 	}
 	var out [][]byte
 	for _, i2 := range result {
@@ -43,9 +54,10 @@ func (r *redisView) HMGet(key string, fields ...string) ([][]byte, error) {
 }
 
 func (r *redisView) HGetAll(key string) (map[string][]byte, error) {
-	result, err := r.cmd.HGetAll(r.expandKey(key)).Result()
-	if nil != err {
-		return nil, err
+	ek := r.expandKey(key)
+	result, err := r.cmd.HGetAll(ek).Result()
+	if nil != err && err != redis.Nil {
+		return nil, fmt.Errorf("get value with key: %s, err: %s", ek, err)
 	}
 	out := make(map[string][]byte)
 	for s, s2 := range result {

@@ -2,6 +2,7 @@ package redisplus
 
 import (
 	"errors"
+	"fmt"
 	"gopkg.in/redis.v5"
 	"strings"
 	"time"
@@ -65,14 +66,21 @@ func (r *redisView) Scan(cursor uint64, match string, count int64) ([]string, er
 }
 
 func (r *redisView) Exists(key string) (bool, error) {
-	return r.cmd.Exists(r.expandKey(key)).Result()
+	ek := r.expandKey(key)
+	has, err := r.cmd.Exists(ek).Result()
+	if nil != err && err != redis.Nil {
+		return false, fmt.Errorf("get value with key: %s, err: %s", ek, err)
+	}
+	return has, nil
 }
 
 func (r *redisView) Get(key string) ([]byte, error) {
-	result, err := r.cmd.Get(r.expandKey(key)).Result()
-	if nil != err {
-		return nil, errors.New("get value with key " + r.expandKey(key) + ", error: " + err.Error())
+	ek := r.expandKey(key)
+	result, err := r.cmd.Get(ek).Result()
+	if nil != err && err != redis.Nil {
+		return nil, fmt.Errorf("get value with key: %s, err: %s", ek, err)
 	}
+
 	return []byte(result), nil
 }
 
