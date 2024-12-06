@@ -8,7 +8,9 @@ require (
 	github.com/hashicorp/go-hclog v1.4.0
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.20.1 // indirect
-	github.com/stretchr/testify v1.8.1 // indirect
-	golang.org/x/net v0.9.0 // indirect
+	github.com/stretchr/testify v1.8.4 // indirect
+	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/text v0.12.0 // indirect
 	gopkg.in/redis.v5 v5.2.9
 )

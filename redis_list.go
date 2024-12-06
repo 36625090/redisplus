@@ -1,6 +1,7 @@
 package redisplus
 
 import (
+	"errors"
 	"fmt"
 	"gopkg.in/redis.v5"
 )
@@ -48,7 +49,7 @@ func (r *redisView) LAppend(key string, values ...[]byte) (int64, error) {
 func (r *redisView) LPop(key string) ([]byte, error) {
 	ek := r.expandKey(key)
 	result, err := r.cmd.LPop(ek).Result()
-	if nil != err && err != redis.Nil {
+	if nil != err && !errors.Is(err, redis.Nil) {
 		return nil, fmt.Errorf("get value with key: %s, err: %s", ek, err)
 	}
 	return []byte(result), nil
@@ -57,7 +58,7 @@ func (r *redisView) LPop(key string) ([]byte, error) {
 func (r *redisView) LRPop(key string) ([]byte, error) {
 	ek := r.expandKey(key)
 	result, err := r.cmd.RPop(ek).Result()
-	if nil != err && err != redis.Nil {
+	if nil != err && !errors.Is(err, redis.Nil) {
 		return nil, fmt.Errorf("get value with key: %s, err: %s", ek, err)
 	}
 	return []byte(result), nil

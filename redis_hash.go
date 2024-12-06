@@ -1,6 +1,7 @@
 package redisplus
 
 import (
+	"errors"
 	"fmt"
 	"gopkg.in/redis.v5"
 )
@@ -33,7 +34,7 @@ func (r *redisView) HMSet(key string, Values map[string][]byte) error {
 func (r *redisView) HGet(key, field string) ([]byte, error) {
 	ek := r.expandKey(key)
 	result, err := r.cmd.HGet(ek, field).Result()
-	if nil != err && err != redis.Nil {
+	if nil != err && !errors.Is(err, redis.Nil) {
 		return nil, fmt.Errorf("get value with key: %s, err: %s", ek, err)
 	}
 
@@ -43,7 +44,7 @@ func (r *redisView) HGet(key, field string) ([]byte, error) {
 func (r *redisView) HMGet(key string, fields ...string) ([][]byte, error) {
 	ek := r.expandKey(key)
 	result, err := r.cmd.HMGet(ek, fields...).Result()
-	if nil != err && err != redis.Nil {
+	if nil != err && !errors.Is(err, redis.Nil) {
 		return nil, fmt.Errorf("get value with key: %s, err: %s", ek, err)
 	}
 	var out [][]byte
