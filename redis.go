@@ -38,6 +38,7 @@ type RedisCli interface {
 	Get(key string) ([]byte, error)
 	// Set Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
 	Set(key string, value []byte, duration string) error
+	SetTimeout(key string, value []byte, duration time.Duration) error
 	Del(keys ...string) (int64, error)
 	Expire(key string, duration string) error
 	HSetNX(key, field string, value []byte) error

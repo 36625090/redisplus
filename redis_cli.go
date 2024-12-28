@@ -77,7 +77,7 @@ func (r *redisView) Exists(key string) (bool, error) {
 func (r *redisView) Get(key string) ([]byte, error) {
 	ek := r.expandKey(key)
 	result, err := r.cmd.Get(ek).Result()
-	if nil != err && err != redis.Nil {
+	if nil != err && !errors.Is(err, redis.Nil) {
 		return nil, fmt.Errorf("get value with key: %s, err: %s", ek, err)
 	}
 
@@ -94,7 +94,9 @@ func (r *redisView) Set(key string, value []byte, duration string) error {
 	}
 	return r.cmd.Set(r.expandKey(key), value, 0).Err()
 }
-
+func (r *redisView) SetTimeout(key string, value []byte, duration time.Duration) error {
+	return r.cmd.Set(r.expandKey(key), value, duration).Err()
+}
 func (r *redisView) Del(keys ...string) (int64, error) {
 	var all []string
 	for _, key := range keys {
