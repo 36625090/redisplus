@@ -22,7 +22,6 @@ type redisView struct {
 
 func NewRedisCli(config *Config, prefix string) (RedisCli, error) {
 	cmd, err := NewRedisCmd(config)
-
 	if err != nil {
 		return nil, err
 	}
